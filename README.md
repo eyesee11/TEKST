@@ -1,6 +1,6 @@
 # Terminal Text Editor Launcher
 
-A simple command-line tool that provides a menu-driven interface for choosing between different text editors (nano, vim, and gedit) to open and edit files.
+A simple Graphic user interface for all the, command-line tool editors that provides a menu-driven interface for choosing between different text editors (nano, vim, and gedit) to open and edit files.
 
 ## Features
 
@@ -9,6 +9,7 @@ A simple command-line tool that provides a menu-driven interface for choosing be
 - Automatic detection of installed editors
 - Simple file path input
 - Error handling for missing editors and invalid inputs
+- An Integrated ChatBot for Reasoning and 1 on 1 doubts and questions reagarding new editors and tools.
 
 ## Requirements3
 
