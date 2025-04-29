@@ -473,6 +473,17 @@ class EditorLauncherGUI:
                                anchor="w", bg=self.colors["cream"], fg=self.colors["dark_brown"])
                 label.pack(fill=tk.X, padx=20, pady=5, anchor="w")
 
+    def open_cmd_as_guest(self):
+        """Open Command Prompt as a guest (Windows only)."""
+        try:
+            if os.name == 'nt':  # Check if the OS is Windows
+                subprocess.Popen("cmd.exe")
+                self.status_var.set("Opened Command Prompt as Guest")
+            else:
+                messagebox.showerror("Error", "This feature is only available on Windows.")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to open Command Prompt: {str(e)}")
+            self.status_var.set("Error opening Command Prompt")
 if __name__ == "__main__":
     root = tk.Tk()
     app = EditorLauncherGUI(root)
