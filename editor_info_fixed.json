@@ -1,0 +1,76 @@
+{
+    "nano": {
+        "name": "Nano",
+        "description": "A simple, modeless text editor for Unix-like systems. It's easy to use and ideal for beginners.",
+        "usage": "nano [options] [filename]",
+        "key_commands": [
+            "Ctrl+O: Save file",
+            "Ctrl+X: Exit",
+            "Ctrl+K: Cut line",
+            "Ctrl+U: Paste line"
+        ],
+        "icon": "📝"
+    },
+    "vim": {
+        "name": "Vim",
+        "description": "A highly configurable text editor built to enable efficient text editing. Vim is a modal editor that separates text insertion from text manipulation.",
+        "usage": "vim [options] [filename]",
+        "key_commands": [
+            "i: Enter insert mode",
+            "Esc: Return to normal mode",
+            ":w: Save file",
+            ":q: Quit",
+            ":wq: Save and quit"
+        ],
+        "icon": "✏️"
+    },
+    "nvim": {
+        "name": "Neovim",
+        "description": "A hyperextensible Vim-based text editor that seeks to aggressively refactor Vim while maintaining compatibility with Vim's features.",
+        "usage": "nvim [options] [filename]",
+        "key_commands": [
+            "i: Enter insert mode",
+            "Esc: Return to normal mode",
+            ":w: Save file",
+            ":q: Quit",
+            ":wq: Save and quit"
+        ],
+        "icon": "📊"
+    },
+    "gedit": {
+        "name": "Gedit",
+        "description": "The official text editor of the GNOME desktop environment. It's a GUI-based editor with syntax highlighting, auto-indentation, and more.",
+        "usage": "gedit [options] [filename]",
+        "key_commands": [
+            "Ctrl+S: Save file",
+            "Ctrl+Q: Quit",
+            "Ctrl+C/V: Copy/Paste",
+            "Ctrl+Z/Y: Undo/Redo"
+        ],
+        "icon": "📘"
+    },
+    "notepad": {
+        "name": "Notepad",
+        "description": "A simple text editor for Windows. Basic but reliable for quick edits.",
+        "usage": "notepad.exe [filename]",
+        "key_commands": [
+            "Ctrl+S: Save file",
+            "Alt+F4: Exit",
+            "Ctrl+F: Find",
+            "Ctrl+Z: Undo"
+        ],
+        "icon": "📄"
+    },
+    "code": {
+        "name": "Visual Studio Code",
+        "description": "A free source-code editor made by Microsoft for Windows, Linux, and macOS. Features include support for debugging, syntax highlighting, intelligent code completion, snippets, and code refactoring.",
+        "usage": "code [options] [filename/folder]",
+        "key_commands": [
+            "Ctrl+S: Save file",
+            "Ctrl+`: Open terminal",
+            "F5: Start debugging",
+            "Ctrl+Shift+P: Show command palette"
+        ],
+        "icon": "💻"
+    }
+}
