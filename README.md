@@ -1,4 +1,4 @@
-![TEKST Banner](https://github.com/user-attachments/assets/your-banner-id-here)
+![TEKST Banner](https://raw.githubusercontent.com/eyesee11/TEKST/master/banner.png)
 
 # TEKST-Advanced JAVA Text Editor
 
