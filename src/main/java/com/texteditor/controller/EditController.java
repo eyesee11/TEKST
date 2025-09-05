@@ -4,6 +4,7 @@ import com.texteditor.model.DocumentManager;
 import com.texteditor.ui.dialogs.FindReplaceDialog;
 
 import javax.swing.*;
+import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
 import java.awt.*;
@@ -16,51 +17,40 @@ import java.awt.event.ActionEvent;
 // your editing utilities in web apps.
 public class EditController {
 
-    private final DocumentManager documentManager;
-    private final UndoManager undoManager;
+    private DocumentManager documentManager;
     private final Clipboard clipboard;
     private Component parentComponent;
     private FindReplaceDialog findReplaceDialog;
+    private com.texteditor.ui.TabManager tabManager;
 
     public EditController(DocumentManager documentManager) {
         this.documentManager = documentManager;
-        this.undoManager = new UndoManager();
         this.clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        // Note: setupUndoSystem will be called later when text area is ready
+    }
+
+    // Set the tab manager reference
+    public void setTabManager(com.texteditor.ui.TabManager tabManager) {
+        this.tabManager = tabManager;
     }
 
     // Initialize the undo system - call this after text area is set up
-
     public void initializeUndoSystem() {
-        setupUndoSystem();
+        // Undo system is now managed by TabManager
+        // This method is kept for compatibility
     }
 
     // Set parent component for dialogs
-
     public void setParentComponent(Component parent) {
         this.parentComponent = parent;
-    }
-
-    // Setup undo/redo system to track document changes
-
-    private void setupUndoSystem() {
-        JTextArea textArea = documentManager.getTextArea();
-        if (textArea != null) {
-            textArea.getDocument().addUndoableEditListener(e -> {
-                UndoableEdit edit = e.getEdit();
-                undoManager.addEdit(edit);
-                updateUndoRedoButtons();
-            });
-        }
     }
 
     // Cut selected text to clipboard
 
     public void cut() {
-        JTextArea textArea = documentManager.getTextArea();
-        if (textArea != null && textArea.getSelectedText() != null) {
+        JTextComponent textComponent = documentManager.getTextComponent();
+        if (textComponent != null && textComponent.getSelectedText() != null) {
             copy(); // First copy the text
-            textArea.replaceSelection(""); // Then delete it
+            textComponent.replaceSelection(""); // Then delete it
             updateStatus("Text cut to clipboard");
         } else {
             updateStatus("No text selected to cut");
@@ -70,9 +60,9 @@ public class EditController {
     // Copy selected text to clipboard
 
     public void copy() {
-        JTextArea textArea = documentManager.getTextArea();
-        if (textArea != null && textArea.getSelectedText() != null) {
-            String selectedText = textArea.getSelectedText();
+        JTextComponent textComponent = documentManager.getTextComponent();
+        if (textComponent != null && textComponent.getSelectedText() != null) {
+            String selectedText = textComponent.getSelectedText();
             StringSelection stringSelection = new StringSelection(selectedText);
             clipboard.setContents(stringSelection, null);
             updateStatus("Text copied to clipboard");
@@ -87,9 +77,9 @@ public class EditController {
         try {
             if (clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
                 String clipboardText = (String) clipboard.getData(DataFlavor.stringFlavor);
-                JTextArea textArea = documentManager.getTextArea();
-                if (textArea != null) {
-                    textArea.replaceSelection(clipboardText);
+                JTextComponent textComponent = documentManager.getTextComponent();
+                if (textComponent != null) {
+                    textComponent.replaceSelection(clipboardText);
                     updateStatus("Text pasted from clipboard");
                 }
             } else {
@@ -103,9 +93,9 @@ public class EditController {
     // Select all text in the document
 
     public void selectAll() {
-        JTextArea textArea = documentManager.getTextArea();
-        if (textArea != null) {
-            textArea.selectAll();
+        JTextComponent textComponent = documentManager.getTextComponent();
+        if (textComponent != null) {
+            textComponent.selectAll();
             updateStatus("All text selected");
         }
     }
@@ -113,8 +103,8 @@ public class EditController {
     // Undo last action
 
     public void undo() {
-        if (undoManager.canUndo()) {
-            undoManager.undo();
+        if (tabManager != null && tabManager.canUndo()) {
+            tabManager.undo();
             updateUndoRedoButtons();
             updateStatus("Undid last action");
         } else {
@@ -125,8 +115,8 @@ public class EditController {
     // Redo last undone action
 
     public void redo() {
-        if (undoManager.canRedo()) {
-            undoManager.redo();
+        if (tabManager != null && tabManager.canRedo()) {
+            tabManager.redo();
             updateUndoRedoButtons();
             updateStatus("Redid last action");
         } else {
@@ -148,17 +138,17 @@ public class EditController {
     // Find next occurrence of text
 
     public void findNext(String searchText, boolean caseSensitive) {
-        JTextArea textArea = documentManager.getTextArea();
-        if (textArea == null || searchText == null || searchText.isEmpty()) {
+        JTextComponent textComponent = documentManager.getTextComponent();
+        if (textComponent == null || searchText == null || searchText.isEmpty()) {
             updateStatus("No search text provided");
             return;
         }
 
-        String content = textArea.getText();
+        String content = textComponent.getText();
         String searchContent = caseSensitive ? content : content.toLowerCase();
         String searchTerm = caseSensitive ? searchText : searchText.toLowerCase();
 
-        int startIndex = textArea.getCaretPosition();
+        int startIndex = textComponent.getCaretPosition();
         int foundIndex = searchContent.indexOf(searchTerm, startIndex);
 
         if (foundIndex == -1 && startIndex > 0) {
@@ -167,8 +157,8 @@ public class EditController {
         }
 
         if (foundIndex != -1) {
-            textArea.setCaretPosition(foundIndex);
-            textArea.select(foundIndex, foundIndex + searchText.length());
+            textComponent.setCaretPosition(foundIndex);
+            textComponent.select(foundIndex, foundIndex + searchText.length());
             updateStatus("Found: " + searchText);
         } else {
             updateStatus("Text not found: " + searchText);
@@ -178,17 +168,17 @@ public class EditController {
     // Replace current selection with replacement text
 
     public void replace(String searchText, String replaceText, boolean caseSensitive) {
-        JTextArea textArea = documentManager.getTextArea();
-        if (textArea == null)
+        JTextComponent textComponent = documentManager.getTextComponent();
+        if (textComponent == null)
             return;
 
-        String selectedText = textArea.getSelectedText();
+        String selectedText = textComponent.getSelectedText();
         if (selectedText != null) {
             boolean matches = caseSensitive ? selectedText.equals(searchText)
                     : selectedText.equalsIgnoreCase(searchText);
 
             if (matches) {
-                textArea.replaceSelection(replaceText);
+                textComponent.replaceSelection(replaceText);
                 updateStatus("Replaced: " + searchText + " with: " + replaceText);
             }
         }
@@ -200,13 +190,13 @@ public class EditController {
     // Replace all occurrences of search text
 
     public void replaceAll(String searchText, String replaceText, boolean caseSensitive) {
-        JTextArea textArea = documentManager.getTextArea();
-        if (textArea == null || searchText == null || searchText.isEmpty()) {
+        JTextComponent textComponent = documentManager.getTextComponent();
+        if (textComponent == null || searchText == null || searchText.isEmpty()) {
             updateStatus("No search text provided");
             return;
         }
 
-        String content = textArea.getText();
+        String content = textComponent.getText();
         String result;
         int replacements;
 
@@ -222,7 +212,7 @@ public class EditController {
                     / Math.max(1, searchText.length() - replaceText.length());
         }
 
-        textArea.setText(result);
+        textComponent.setText(result);
         updateStatus("Replaced " + replacements + " occurrences");
     }
 
@@ -241,21 +231,22 @@ public class EditController {
 
     // Getters for UI components to check states
     public boolean canUndo() {
-        return undoManager.canUndo();
+        return tabManager != null && tabManager.canUndo();
     }
 
     public boolean canRedo() {
-        return undoManager.canRedo();
+        return tabManager != null && tabManager.canRedo();
     }
 
     public UndoManager getUndoManager() {
-        return undoManager;
+        return tabManager != null ? tabManager.getCurrentUndoManager() : null;
     }
 
     // Set current components for multi-tab support
     public void setCurrentComponents(JTextPane textPane, DocumentManager documentManager) {
-        // This method is called when switching tabs to update the controller's context
-        // For now, we'll keep the original documentManager but this could be expanded
-        // to handle per-tab edit operations differently if needed
+        // Update the document manager reference
+        if (documentManager != null) {
+            this.documentManager = documentManager;
+        }
     }
 }

@@ -76,10 +76,17 @@ public class MainWindow extends JFrame {
             // The controllers will be updated via setCurrentComponents when tabs change
             fileController.setCurrentComponents(tabManager.getCurrentTextPane(), currentDocManager);
             editController.setCurrentComponents(tabManager.getCurrentTextPane(), currentDocManager);
+            
+            // Initialize the undo system for the current tab
+            editController.initializeUndoSystem();
         }
 
-        // Set TabManager reference in FileController for new tab creation
+        // Set parent component for dialogs
+        editController.setParentComponent(this);
+
+        // Set TabManager reference in controllers
         fileController.setTabManager(tabManager);
+        editController.setTabManager(tabManager);
     }
 
     // setting up layout CSS(grid/flex)

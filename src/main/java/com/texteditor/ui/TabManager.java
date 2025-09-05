@@ -6,6 +6,8 @@ import com.texteditor.ui.themes.PixelatedTheme;
 
 import javax.swing.*;
 import javax.swing.text.*;
+import javax.swing.undo.UndoManager;
+import javax.swing.undo.UndoableEdit;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -23,6 +25,7 @@ public class TabManager extends JTabbedPane {
     private Map<Integer, JTextPane> textPanes;
     private Map<Integer, JScrollPane> scrollPanes;
     private Map<Integer, FormattingPopup> formattingPopups;
+    private Map<Integer, UndoManager> undoManagers;
     private List<String> tabTitles;
     private int nextTabId = 1;
 
@@ -32,6 +35,7 @@ public class TabManager extends JTabbedPane {
         this.textPanes = new HashMap<>();
         this.scrollPanes = new HashMap<>();
         this.formattingPopups = new HashMap<>();
+        this.undoManagers = new HashMap<>();
         this.tabTitles = new ArrayList<>();
 
         setupTabPane();
@@ -83,11 +87,16 @@ public class TabManager extends JTabbedPane {
         // create formatting popup for this tab
         FormattingPopup formattingPopup = new FormattingPopup(textPane);
 
+        // create undo manager for this tab
+        UndoManager undoManager = new UndoManager();
+        setupUndoSystem(textPane, undoManager);
+
         // store all components
         textPanes.put(tabId, textPane);
         scrollPanes.put(tabId, scrollPane);
         documentManagers.put(tabId, documentManager);
         formattingPopups.put(tabId, formattingPopup);
+        undoManagers.put(tabId, undoManager);
 
         // create tab with close button
         JPanel tabPanel = createTabPanel(title, tabId);
@@ -104,6 +113,14 @@ public class TabManager extends JTabbedPane {
         updateMainWindowComponents();
 
         return tabId;
+    }
+
+    // setup undo system for a text pane
+    private void setupUndoSystem(JTextPane textPane, UndoManager undoManager) {
+        textPane.getDocument().addUndoableEditListener(e -> {
+            UndoableEdit edit = e.getEdit();
+            undoManager.addEdit(edit);
+        });
     }
 
     // setup text pane with proper configuration
@@ -235,6 +252,7 @@ public class TabManager extends JTabbedPane {
             scrollPanes.remove(tabId);
             documentManagers.remove(tabId);
             formattingPopups.remove(tabId);
+            undoManagers.remove(tabId);
 
             // if no tabs left, create a new one
             if (getTabCount() == 0) {
@@ -288,6 +306,52 @@ public class TabManager extends JTabbedPane {
             }
         }
         return null;
+    }
+
+    // get current undo manager
+    public UndoManager getCurrentUndoManager() {
+        JTextPane currentPane = getCurrentTextPane();
+        if (currentPane != null) {
+            // find the undo manager for this text pane
+            for (Map.Entry<Integer, JTextPane> entry : textPanes.entrySet()) {
+                if (entry.getValue() == currentPane) {
+                    return undoManagers.get(entry.getKey());
+                }
+            }
+        }
+        return null;
+    }
+
+    // undo last action in current tab
+    public boolean undo() {
+        UndoManager undoManager = getCurrentUndoManager();
+        if (undoManager != null && undoManager.canUndo()) {
+            undoManager.undo();
+            return true;
+        }
+        return false;
+    }
+
+    // redo last undone action in current tab
+    public boolean redo() {
+        UndoManager undoManager = getCurrentUndoManager();
+        if (undoManager != null && undoManager.canRedo()) {
+            undoManager.redo();
+            return true;
+        }
+        return false;
+    }
+
+    // check if current tab can undo
+    public boolean canUndo() {
+        UndoManager undoManager = getCurrentUndoManager();
+        return undoManager != null && undoManager.canUndo();
+    }
+
+    // check if current tab can redo
+    public boolean canRedo() {
+        UndoManager undoManager = getCurrentUndoManager();
+        return undoManager != null && undoManager.canRedo();
     }
 
     // update main window components when tab changes
@@ -345,7 +409,7 @@ public class TabManager extends JTabbedPane {
                 int selEnd = textPane.getSelectionEnd();
 
                 // calculate popup position near the selection
-                Rectangle selectionBounds = textPane.modelToView(selStart);
+                Rectangle selectionBounds = textPane.modelToView2D(selStart).getBounds();
                 if (selectionBounds != null) {
                     int x = selectionBounds.x;
                     int y = selectionBounds.y + selectionBounds.height + 5;

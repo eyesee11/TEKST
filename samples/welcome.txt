@@ -1,0 +1,53 @@
+Welcome to TEKST - The Advanced Text Editor!
+
+This is a sample document to demonstrate TEKST's capabilities.
+
+🎨 RICH TEXT FEATURES
+====================
+
+Try these formatting options:
+- Select text and right-click to access formatting popup
+- Bold, italic, and underline text
+- Change font families: Consolas, Arial, Times New Roman
+- Adjust font sizes from 8pt to 32pt
+- Apply colors and highlighting
+
+📑 MULTI-TAB INTERFACE
+=====================
+
+Press Ctrl+N to create new tabs
+Each tab maintains its own:
+- Document content and formatting
+- Undo/redo history
+- File save state
+
+⌨️ KEYBOARD SHORTCUTS
+====================
+
+File Operations:
+- Ctrl+N: New document
+- Ctrl+O: Open file
+- Ctrl+S: Save
+- Ctrl+Shift+S: Save As
+
+Editing:
+- Ctrl+Z: Undo
+- Ctrl+Y: Redo
+- Ctrl+F: Find & Replace
+- Ctrl+A: Select All
+
+🎨 THEMES
+=========
+
+Go to View > Themes to try:
+- Normal (Default)
+- Dark Retro
+- Neon Synthwave
+- Forest Pixel
+- Ocean Wave
+- Sunset Arcade
+- Matrix Hacker
+
+✨ TIP: Right-click on selected text to access the formatting popup with bold, italic, underline, fonts, colors, and highlighting options!
+
+Happy editing with TEKST!

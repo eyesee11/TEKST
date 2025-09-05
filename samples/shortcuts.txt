@@ -1,0 +1,59 @@
+TEKST Keyboard Shortcuts Quick Reference
+=======================================
+
+FILE OPERATIONS
+===============
+Ctrl+N          Create new document (opens in new tab)
+Ctrl+O          Open existing document
+Ctrl+S          Save current document
+Ctrl+Shift+S    Save As (save with new name/location)
+Ctrl+W          Close current tab
+Ctrl+Q          Exit application
+
+EDITING COMMANDS  
+================
+Ctrl+Z          Undo last action
+Ctrl+Y          Redo last action
+Ctrl+X          Cut selected text
+Ctrl+C          Copy selected text
+Ctrl+V          Paste from clipboard
+Ctrl+A          Select all text
+Ctrl+F          Find and replace dialog
+
+TEXT FORMATTING
+===============
+Right-click on selected text to access formatting popup:
+- Bold, Italic, Underline
+- Font family selection
+- Font size adjustment
+- Text color picker
+- Background highlighting
+
+NAVIGATION
+==========
+Click on tab headers to switch between documents
+Each tab maintains independent:
+- Content and formatting
+- Undo/redo history
+- Save state
+
+THEMES
+======
+View > Themes menu to access:
+- Normal (Default)
+- Dark Retro
+- Neon Synthwave
+- Forest Pixel
+- Ocean Wave
+- Sunset Arcade
+- Matrix Hacker
+
+TIPS
+====
+- Double-click to select whole words
+- Use Find & Replace (Ctrl+F) for bulk text operations
+- Each tab has its own formatting and document state
+- Right-click formatting popup works with any selected text
+- Themes apply to entire interface including formatting popup
+
+For more help, visit: https://github.com/eyesee11/TEKST
